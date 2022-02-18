@@ -15,13 +15,14 @@ class Searchbar extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    const { title } = this.state;
 
-    if (this.state.title.trim() === '') {
+    if (title.trim() === '') {
       Notify.warning('введите данные в поисковую строку');
 
       return;
     }
-    this.props.onSubmit(this.state.title);
+    this.props.onSubmit(title);
 
     this.setState({ title: '' });
   };

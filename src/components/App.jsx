@@ -1,5 +1,5 @@
 import { Component } from 'react';
-// import PropTypes from 'prop-types';
+
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
@@ -15,7 +15,6 @@ class App extends Component {
     title: '',
     showModal: false,
     error: null,
-
     page: 1,
     largeImageId: null,
     gallery: [],
@@ -25,6 +24,7 @@ class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     const nextTitle = this.state.title;
     const nextPage = this.state.page;
+    const { title } = this.state;
 
     if (prevState.title !== nextTitle || prevState.page !== nextPage) {
       this.setState({ loading: true });
@@ -34,7 +34,7 @@ class App extends Component {
           if (gallery.total === 0) {
             this.setState({ gallery: [] });
             Notify.failure(
-              `Неуспешный результат поиска ${this.state.title}. попробуйте еще раз`
+              `Неуспешный результат поиска ${title}. попробуйте еще раз`
             );
             return;
           }
@@ -50,7 +50,7 @@ class App extends Component {
         .catch(error => {
           this.setState({ error });
           Notify.failure(
-            `Неуспешный результат поиска ${this.state.title}. попробуйте еще раз`
+            `Неуспешный результат поиска ${title}. попробуйте еще раз`
           );
           return;
         })
@@ -59,13 +59,11 @@ class App extends Component {
   }
 
   handleformSubmit = title => {
-    console.log(title);
     this.setState({ title });
   };
 
   onClickLoadMore = () => {
     this.setState(prevState => {
-      console.log(prevState.page);
       return {
         page: (prevState.page += 1),
       };
@@ -86,8 +84,10 @@ class App extends Component {
   };
 
   onSearchLargeImg = () => {
-    const largeImg = this.state.gallery.find(image => {
-      return image.id === this.state.largeImageId;
+    const { gallery, largeImageId } = this.state;
+
+    const largeImg = gallery.find(image => {
+      return image.id === largeImageId;
     });
     return largeImg;
   };
@@ -100,7 +100,7 @@ class App extends Component {
   };
 
   render() {
-    const { loading, gallery, error } = this.state;
+    const { loading, gallery, error, showModal } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleformSubmit} />
@@ -117,7 +117,7 @@ class App extends Component {
 
         {gallery.length >= 12 && <Button onClick={this.onClickLoadMore} />}
 
-        {this.state.showModal && (
+        {showModal && (
           <Modal onClose={this.onCloseModal}>
             {
               <img

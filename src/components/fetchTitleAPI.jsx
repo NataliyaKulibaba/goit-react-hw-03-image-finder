@@ -1,11 +1,9 @@
 // import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 function fetchTitle(title, page) {
-  console.log(title);
   return fetch(
     `https://pixabay.com/api/?key=24469743-af1bc0463689ec6840cc2fde9&q=${title}&page=${page}&per_page=12`
   ).then(response => {
-    console.log(response);
     return response.json();
   });
 }
