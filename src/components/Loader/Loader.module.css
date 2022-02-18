@@ -2,4 +2,5 @@
   position: absolute;
   top: 44%;
   left: 47%;
+  z-index: 2;
 }
