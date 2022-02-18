@@ -4,7 +4,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 
-import titleFetchAPI from './ImageGallery/fetchTitleAPI';
+import titleFetchAPI from './fetchTitleAPI';
 import Button from './Button/Button';
 import Loader from './Loader/Loader';
 
