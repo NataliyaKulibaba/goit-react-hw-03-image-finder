@@ -1,0 +1,14 @@
+.galleryItem {
+  padding: 5px;
+}
+li {
+  list-style: none;
+  display: block;
+  width: 200px;
+  height: 130px;
+}
+/* img {
+  display: block;
+  width: 200px;
+  height: 130px;
+} */
