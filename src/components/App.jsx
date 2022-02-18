@@ -1,8 +1,8 @@
 import { Component } from 'react';
+// import PropTypes from 'prop-types';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
-
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 import titleFetchAPI from './ImageGallery/fetchTitleAPI';
 import Button from './Button/Button';
@@ -18,8 +18,7 @@ class App extends Component {
 
     page: 1,
     largeImageId: null,
-    modalSrc: null,
-    gallery: null,
+    gallery: [],
     loading: false,
   };
 
@@ -33,20 +32,27 @@ class App extends Component {
         .fetchTitle(nextTitle, nextPage)
         .then(gallery => {
           if (gallery.total === 0) {
-            this.setState({ gallery: null });
+            this.setState({ gallery: [] });
             Notify.failure(
               `Неуспешный результат поиска ${this.state.title}. попробуйте еще раз`
             );
+            return;
           }
-          if (!this.state.gallery) {
+          if (!this.state.gallery || prevState.title !== nextTitle) {
             this.setState({ gallery: gallery.hits });
           } else {
-            console.log(gallery);
-            console.log(gallery.hits);
             this.setState({
               gallery: [...prevState.gallery, ...gallery.hits],
             });
+            this.scroll();
           }
+        })
+        .catch(error => {
+          this.setState({ error });
+          Notify.failure(
+            `Неуспешный результат поиска ${this.state.title}. попробуйте еще раз`
+          );
+          return;
         })
         .finally(() => this.setState({ loading: false }));
     }
@@ -67,7 +73,6 @@ class App extends Component {
   };
 
   onOpenModal = e => {
-    console.log(e.target.id);
     this.setState({
       showModal: true,
       largeImageId: Number(e.target.id),
@@ -87,29 +92,46 @@ class App extends Component {
     return largeImg;
   };
 
+  scroll = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
+  };
+
   render() {
-    const { loading, gallery } = this.state;
+    const { loading, gallery, error } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleformSubmit} />
 
         {loading && <Loader />}
-        {gallery && (
+
+        {gallery.length > 0 && (
           <ImageGallery
             gallery={gallery}
             onClick={this.onClickLoadMore}
             onOpen={this.onOpenModal}
           />
         )}
-        {gallery && <Button onClick={this.onClickLoadMore} />}
+
+        {gallery.length >= 12 && <Button onClick={this.onClickLoadMore} />}
 
         {this.state.showModal && (
           <Modal onClose={this.onCloseModal}>
-            {<img src={this.onSearchLargeImg().largeImageURL} alt="" />}
+            {
+              <img
+                src={this.onSearchLargeImg().largeImageURL}
+                alt={this.onSearchLargeImg().tags}
+              />
+            }
           </Modal>
         )}
+
+        {error && error}
       </>
     );
   }
 }
+
 export default App;

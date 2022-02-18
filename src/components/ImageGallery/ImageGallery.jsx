@@ -1,11 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
-import Button from '../Button/Button';
 
 import s from './ImageGallery.module.css';
 
-function ImageGallery({ gallery, onOpen, onClick }) {
-  console.log(onOpen);
+function ImageGallery({ gallery, onOpen }) {
   return (
     <>
       <ul className={s.gallery}>
@@ -20,9 +19,13 @@ function ImageGallery({ gallery, onOpen, onClick }) {
           />
         ))}
       </ul>
-      <Button onClick={onClick} />
     </>
   );
 }
+
+ImageGallery.propTypes = {
+  gallery: PropTypes.array.isRequired,
+  onOpen: PropTypes.func.isRequired,
+};
 
 export default ImageGallery;

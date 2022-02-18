@@ -28,12 +28,13 @@ class Modal extends Component {
   render() {
     return createPortal(
       <div className={s.overlay} onClick={this.handleBackdropclick}>
-        <div className={s.modal}>
-          {this.props.children}
-          {/* <img src={this.props.src} alt="" /> */}
-        </div>
-        <button type="button" onClick={this.props.onClose}>
-          Закрыть
+        <div className={s.modal}>{this.props.children}</div>
+        <button
+          className={s.btnCloseModal}
+          type="button"
+          onClick={this.props.onClose}
+        >
+          x
         </button>
       </div>,
       modalRoot

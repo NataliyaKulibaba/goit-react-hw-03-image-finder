@@ -1,6 +1,8 @@
 import { Component } from 'react';
-// import { toast } from 'react-toastify';
+
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
+import s from './Searchbar.module.css';
 
 class Searchbar extends Component {
   state = {
@@ -15,9 +17,7 @@ class Searchbar extends Component {
     e.preventDefault();
 
     if (this.state.title.trim() === '') {
-      // alert('введите данные в поисковую строку');
       Notify.warning('введите данные в поисковую строку');
-      // toast.info('введите данные в поисковую строку');
 
       return;
     }
@@ -28,10 +28,10 @@ class Searchbar extends Component {
 
   render() {
     return (
-      <header className="searchbar">
-        <form className="form" onSubmit={this.handleSubmit}>
+      <header className={s.searchbar}>
+        <form className={s.form} onSubmit={this.handleSubmit}>
           <input
-            className="input"
+            className={s.input}
             type="text"
             autoComplete="off"
             autoFocus
@@ -40,8 +40,8 @@ class Searchbar extends Component {
             onChange={this.handleTitleChange}
           />
 
-          <button type="submit" className="button">
-            <span className="button-label">Search</span>
+          <button type="submit" className={s.button}>
+            <span className={s.buttonLabel}>Search</span>
           </button>
         </form>
       </header>
