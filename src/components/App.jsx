@@ -24,34 +24,35 @@ class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     const nextTitle = this.state.title;
     const nextPage = this.state.page;
+
     const { title } = this.state;
 
     if (prevState.title !== nextTitle || prevState.page !== nextPage) {
-      console.log(prevState.page);
-      console.log(nextPage);
       this.setState({ loading: true });
       titleFetchAPI
         .fetchTitle(nextTitle, nextPage)
         .then(gallery => {
-          if (gallery.total === 0) {
+          if (!gallery.length) {
             this.setState({ gallery: [] });
             Notify.failure(
               `Неуспешный результат поиска ${title}. Попробуйте еще раз`
             );
             return;
           }
+
           if (!this.state.gallery || prevState.title !== nextTitle) {
             this.setState({
-              gallery: gallery.hits,
+              gallery,
             });
           } else {
             this.setState({
-              gallery: [...prevState.gallery, ...gallery.hits],
+              gallery: [...prevState.gallery, ...gallery],
             });
-
             this.scroll();
+            return;
           }
         })
+
         .catch(error => {
           this.setState({ error });
           Notify.failure(
@@ -59,6 +60,7 @@ class App extends Component {
           );
           return;
         })
+
         .finally(() => this.setState({ loading: false }));
     }
   }
@@ -68,11 +70,8 @@ class App extends Component {
   };
 
   onClickLoadMore = () => {
-    this.setState(prevState => {
-      return {
-        page: (prevState.page += 1),
-      };
-    });
+    const { page } = this.state;
+    this.setState({ page: page + 1 });
   };
 
   onOpenModal = e => {
@@ -113,11 +112,7 @@ class App extends Component {
         {loading && <Loader />}
 
         {gallery.length > 0 && (
-          <ImageGallery
-            gallery={gallery}
-            onClick={this.onClickLoadMore}
-            onOpen={this.onOpenModal}
-          />
+          <ImageGallery gallery={gallery} onOpen={this.onOpenModal} />
         )}
 
         {gallery.length >= 12 && <Button onClick={this.onClickLoadMore} />}
