@@ -27,6 +27,8 @@ class App extends Component {
     const { title } = this.state;
 
     if (prevState.title !== nextTitle || prevState.page !== nextPage) {
+      console.log(prevState.page);
+      console.log(nextPage);
       this.setState({ loading: true });
       titleFetchAPI
         .fetchTitle(nextTitle, nextPage)
@@ -34,16 +36,19 @@ class App extends Component {
           if (gallery.total === 0) {
             this.setState({ gallery: [] });
             Notify.failure(
-              `Неуспешный результат поиска ${title}. попробуйте еще раз`
+              `Неуспешный результат поиска ${title}. Попробуйте еще раз`
             );
             return;
           }
           if (!this.state.gallery || prevState.title !== nextTitle) {
-            this.setState({ gallery: gallery.hits });
+            this.setState({
+              gallery: gallery.hits,
+            });
           } else {
             this.setState({
               gallery: [...prevState.gallery, ...gallery.hits],
             });
+
             this.scroll();
           }
         })
